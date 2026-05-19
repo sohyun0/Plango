@@ -3,17 +3,16 @@
 import deleteUser from "@/api/user/delete-user";
 import { useLogout } from "@/hooks";
 import { getAccessToken } from "@/lib/token";
-import { useAuthStore } from "@/store/auth.store";
+import { useUserQuery } from "@/hooks/user/use-userQuery";
 import Link from "next/link";
 import { useToast } from "@/providers/toast-provider";
 
 export default function HomePage() {
   const { showToast } = useToast();
-  const user = useAuthStore(state => state.user);
+  const { data: user, isLoading } = useUserQuery();
   const accessToken = getAccessToken();
-  const initialized = useAuthStore(state => state.initialized);
   const logout = useLogout();
-  if (!initialized) {
+  if (isLoading) {
     return null;
   }
   if (!user)
