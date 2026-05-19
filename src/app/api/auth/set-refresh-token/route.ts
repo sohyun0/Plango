@@ -1,5 +1,5 @@
 import { createErrorResponse } from "@/lib/server/error";
-import { cookies } from "next/headers";
+import { setTokenCookies } from "@/lib/server/cookie";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
@@ -19,26 +19,8 @@ export const POST = async (req: NextRequest) => {
         400,
       );
     }
-    // 쿠키설정
-    const cookieStore = await cookies();
-    cookieStore.set({
-      name: "refreshToken",
-      value: refreshToken,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24 * 7, // 7일
-      path: "/",
-      sameSite: "lax",
-    });
-    cookieStore.set({
-      name: "accessToken",
-      value: accessToken,
-      httpOnly: false,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60, // 1시간
-      path: "/",
-      sameSite: "lax",
-    });
+    // 쿠키 설정 (accessToken도 httpOnly:true로 보안 강화)
+    await setTokenCookies(accessToken, refreshToken);
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     return createErrorResponse(
