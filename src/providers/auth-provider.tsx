@@ -3,7 +3,6 @@
 import { ReactNode, useEffect } from "react";
 import { useAuthStore } from "@/store/auth.store";
 import { User } from "@/types/user";
-import { getAccessToken } from "@/lib/token";
 
 /**
  * 최초 렌더링 시 SSR 기반 로그인
@@ -17,30 +16,29 @@ export default function AuthProvider({ children, initialUser }: AuthProviderProp
   const { setUser, setInitialized } = useAuthStore(state => state.actions);
 
   useEffect(() => {
-    // SSR 기반 로그인
-    if (initialUser) setUser(initialUser);
-
-    const accessToken = getAccessToken();
-
-    // accessToken 있으면 refresh 안함
-    if (accessToken) {
+    if (initialUser) {
+      setUser(initialUser);
       setInitialized(true);
       return;
     }
-    const accessTokenCookie = async () => {
+
+    const initializeUser = async () => {
       try {
-        // refreshToken이 있으면 accessToken 재발급, 없으면 무시
-        await fetch("/api/auth/initial-user", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        });
+        const response = await fetch("/api/user");
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+        if (data) {
+          setUser(data);
+        }
       } finally {
         setInitialized(true);
       }
     };
 
-    accessTokenCookie();
-  }, []);
+    initializeUser();
+  }, [initialUser, setUser, setInitialized]);
 
   return <>{children}</>;
 }
