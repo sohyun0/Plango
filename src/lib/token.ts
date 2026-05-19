@@ -5,7 +5,6 @@
 
 import { useAuthStore } from "@/store/auth.store";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 const isBrowser = typeof document !== "undefined";
 // 쿠키에서 accessToken 가져오기
 
@@ -22,7 +21,7 @@ export const getAccessToken = (): string | null => {
 // refreshToken을 이용해 accessToken 재발급
 export const requestNewAccessToken = async (): Promise<string | null> => {
   try {
-    const res = await fetch(`${APP_URL}/api/auth/refresh`, {
+    const res = await fetch("/api/auth/refresh", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     });
@@ -39,7 +38,7 @@ export const requestNewAccessToken = async (): Promise<string | null> => {
 // 로그아웃 시 쿠키 삭제
 export const logoutDirect = async () => {
   try {
-    await fetch(`${APP_URL}/api/auth/logout`, { method: "POST" });
+    await fetch("/api/auth/logout", { method: "POST" });
   } finally {
     useAuthStore.getState().actions.clearAuth();
   }
