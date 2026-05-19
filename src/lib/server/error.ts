@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { parseJsonSafely } from "../error";
 
 /**
  * 서버에서 에러 발생시 메세지 출력
@@ -28,4 +29,9 @@ export class ServerFetchError extends Error {
     this.name = "ServerFetchError";
     this.status = status;
   }
+}
+
+export async function nextJsonResponse(response: Response) {
+  const data = await parseJsonSafely(response);
+  return NextResponse.json(data, { status: response.status });
 }
