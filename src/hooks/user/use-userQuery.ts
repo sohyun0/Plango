@@ -7,7 +7,7 @@ import { useAuthStore } from "@/store/auth.store";
 import { User } from "@/types/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import patchPassword from "@/api/user/patch-password";
-import useLogout from "../use-logout";
+import useLogout from "../auth/use-logout";
 import deleteUser from "@/api/user/delete-user";
 
 export const useUserQuery = () => {
