@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { clearTokenCookies } from "@/lib/server/cookie";
 import { NextResponse } from "next/server";
 
 /**
@@ -6,19 +6,6 @@ import { NextResponse } from "next/server";
  * @author sohyun
  */
 export const POST = async () => {
-  const cookieStore = await cookies();
-
-  cookieStore.set({
-    name: "refreshToken",
-    value: "",
-    maxAge: 0,
-    path: "/",
-  });
-  cookieStore.set({
-    name: "accessToken",
-    value: "",
-    maxAge: 0,
-    path: "/",
-  });
+  await clearTokenCookies();
   return NextResponse.json({ success: true }, { status: 200 });
 };
