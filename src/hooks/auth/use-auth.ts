@@ -10,7 +10,7 @@ import { useToast } from "@/providers/toast-provider";
 import patchResetPassword from "@/api/user/patch-reset-password";
 import { UserResetPassword } from "@/types/user";
 import { AxiosError } from "axios";
-import useAuthSuccess from "../use-auth-success";
+import useAuthSuccess from "./use-auth-success";
 import postSignInProvider from "@/api/auth/post-signin-provider";
 import { devConsoleError } from "@/lib/error";
 
