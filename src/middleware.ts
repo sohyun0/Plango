@@ -13,17 +13,21 @@ const isProtectedPath = (path: string) => {
 
 export const middleware = (req: NextRequest) => {
   const { pathname } = req.nextUrl;
-  const auth = req.cookies.get("refreshToken")?.value;
+  const isAuth = Boolean(req.cookies.get("refreshToken")?.value);
+  const isGuestPath = GUEST_ONLY.includes(pathname);
+  const isProtected = isProtectedPath(pathname);
+
+  // 로그인 상태
+  if (isAuth && isGuestPath) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
 
   // 게스트 상태
-  if (!auth) {
-    if (isProtectedPath(pathname)) return NextResponse.rewrite(new URL("/not-found", req.url));
+  if (!isAuth) {
+    if (isProtected) return NextResponse.rewrite(new URL("/not-found", req.url));
+
     return NextResponse.next();
   }
 
-  // 로그인 상태
-  if (GUEST_ONLY.includes(pathname)) {
-    return NextResponse.redirect(new URL("/", req.url));
-  }
   return NextResponse.next();
 };
