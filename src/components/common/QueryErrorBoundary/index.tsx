@@ -25,15 +25,17 @@ function ErrorFallback({
   description = "잠시 후 다시 시도해주세요.",
 }: ErrorFallbackProps) {
   return (
-    <div className="mt-5 text-center text-sm text-gray-500 md:mt-6 md:text-base">
-      <p>
-        {prefix}
-        {title}
-      </p>
-      <p>{description}</p>
-      <Button className="w-30 mx-auto mt-4" onClick={resetErrorBoundary}>
-        다시 시도
-      </Button>
+    <div className="full-scroll-h flex-1 content-center justify-items-center text-center">
+      <div className="text-center text-sm text-gray-500 md:text-base">
+        <p>
+          {prefix}
+          {title}
+        </p>
+        <p>{description}</p>
+        <Button className="w-30 mx-auto mt-4" onClick={resetErrorBoundary}>
+          다시 시도
+        </Button>
+      </div>
     </div>
   );
 }
