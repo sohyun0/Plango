@@ -1,4 +1,4 @@
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import getArticleDetailSSR from "@/api/article/get-article-detail-ssr";
 import { notFound } from "next/navigation";
 import { AxiosError } from "axios";
@@ -10,6 +10,7 @@ import {
   ARTICLE_COMMON_STYLES,
   ARTICLE_DETAIL_STYLES,
 } from "@/components/features/article/index.styles";
+import { getQueryClient } from "@/lib/getQueryClient";
 
 export default async function ArticleDetailPage({
   params,
@@ -18,7 +19,7 @@ export default async function ArticleDetailPage({
 }) {
   const { articleId } = await params;
   const articleIdNum = Number(articleId);
-  const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
 
   const article = await getArticleDetailSSR({ articleId: articleIdNum }).catch(e => {
     if (e instanceof AxiosError && e.response?.status === 404) notFound();

@@ -1,15 +1,16 @@
 import { notFound } from "next/navigation";
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getGroupTaskListsforServer } from "@/api/tasklist/index-server";
 import getSSRUserGroups from "@/api/team/get-ssr-user-groups";
 import getSSRUser from "@/api/user/get-ssr-user";
 import TeamClientPages from "./team-client";
+import { getQueryClient } from "@/lib/getQueryClient";
 
 export default async function TeamPages({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
   const groupId = Number(id);
-  const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
 
   const groupData = await getGroupTaskListsforServer(groupId);
   const userGroup = await getSSRUserGroups();

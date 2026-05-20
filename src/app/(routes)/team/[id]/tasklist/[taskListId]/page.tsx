@@ -1,8 +1,9 @@
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import TaskListClient from "./tasklist-client";
 import { isEmpty } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import { getGroupTaskListsforServer } from "@/api/tasklist/index-server";
+import { getQueryClient } from "@/lib/getQueryClient";
 
 export default async function TasklistPage({
   params,
@@ -16,7 +17,7 @@ export default async function TasklistPage({
   }
 
   const groupId = Number(id);
-  const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
 
   const groupResult = await getGroupTaskListsforServer(groupId);
 
