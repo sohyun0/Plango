@@ -13,6 +13,7 @@ import { devConsoleError } from "@/lib/error";
 import { useToast } from "@/providers/toast-provider";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "@/providers/alert-provider";
+import { authQueryKeys } from "@/queryKeys/Auth";
 
 export default function TeamCreatePage() {
   const router = useRouter();
@@ -63,7 +64,7 @@ export default function TeamCreatePage() {
     mutationFn: postGroups,
     onSuccess: res => {
       sessionStorage.setItem("teatCreateMessage", "팀이 생성되었습니다.");
-      queryClient.invalidateQueries({ queryKey: ["getUser"] });
+      queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
       router.replace(`/team/${res.id}`);
     },
     onError: error => {

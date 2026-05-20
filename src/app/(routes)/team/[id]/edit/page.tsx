@@ -15,6 +15,7 @@ import IcEdit from "@/assets/icons/ic-pencil-border.svg";
 import { devConsoleError } from "@/lib/error";
 import { useToast } from "@/providers/toast-provider";
 import TeamEditSkeleton from "@/components/skeleton-ui/team-edit-skeleton";
+import { authQueryKeys } from "@/queryKeys/Auth";
 
 export default function TeamEditPagae() {
   const param = useParams();
@@ -63,7 +64,7 @@ export default function TeamEditPagae() {
         queryKey: ["getGroups", groupId],
       });
       sessionStorage.setItem("teamEditMessage", "팀이 수정되었습니다.");
-      queryClient.invalidateQueries({ queryKey: ["getUser"] });
+      queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
       router.replace(`/team/${groupId}`);
     },
     onError: error => {
