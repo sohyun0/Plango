@@ -1,12 +1,13 @@
 import { Suspense } from "react";
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import getSSRHistory from "@/api/user/get-ssr-history";
 import HistoryListSkeleton from "@/components/skeleton-ui/history-list-skeleton";
 import QueryErrorBoundary from "@/components/common/QueryErrorBoundary";
 import HistoryClient from "./history-client";
+import { getQueryClient } from "@/lib/getQueryClient";
 
 export default async function MyHistoryPage() {
-  const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["history"],
     queryFn: getSSRHistory,
