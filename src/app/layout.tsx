@@ -5,6 +5,7 @@ import "../styles/custom-react-datepicker.css";
 import { AlertProvider } from "@/providers/alert-provider";
 import AuthProvider from "@/providers/auth-provider";
 import { ToastProvider } from "@/providers/toast-provider";
+import QueryProvider from "@/providers/query-provider";
 
 export const metadata: Metadata = {
   title: "Plango",
@@ -15,11 +16,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="ko">
       <body>
-        <AuthProvider>
-          <AlertProvider>
-            <ToastProvider>{children}</ToastProvider>
-          </AlertProvider>
-        </AuthProvider>
+        <QueryProvider>
+          <AuthProvider>
+            <AlertProvider>
+              <ToastProvider>{children}</ToastProvider>
+            </AlertProvider>
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );
