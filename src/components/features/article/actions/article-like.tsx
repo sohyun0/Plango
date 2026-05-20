@@ -5,15 +5,14 @@ import deleteArticleLike from "@/api/article/delete-article-like";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/auth.store";
+import { useUser } from "@/hooks/user/use-userQuery";
 import useArticleDetail from "@/hooks/article/use-article-detail";
 import { LikeButton } from "@/components/ui";
 import { ArticleConfirmModal } from "../layout";
 import { ArticleDetail, ArticleLikeProps } from "@/types/article";
 
 export default function ArticleLike({ articleId, className, initialData }: ArticleLikeProps) {
-  const currentUser = useAuthStore(state => state.user);
-  const isLogin = !!currentUser;
+  const { isLoggedIn } = useUser();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -58,7 +57,7 @@ export default function ArticleLike({ articleId, className, initialData }: Artic
   });
 
   const handleLikeClick = () => {
-    if (!isLogin) {
+    if (!isLoggedIn) {
       setShowLoginModal(true);
     } else {
       mutate(data && data.isLiked ? "unlike" : "like");

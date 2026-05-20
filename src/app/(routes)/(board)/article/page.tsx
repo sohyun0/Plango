@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/auth.store";
+import { useUser } from "@/hooks/user/use-userQuery";
 import { useToast } from "@/providers/toast-provider";
 import { Container } from "@/components/layout";
 import { SearchBar, BestArticleSection, AllArticleSection } from "@/components/features/article";
@@ -17,9 +17,8 @@ import {
 import IcEdit from "@/assets/icons/ic-pencil.svg";
 
 export default function ArticlesPage() {
-  const currentUser = useAuthStore(state => state.user);
+  const { isLoggedIn } = useUser();
   const router = useRouter();
-  const isLogin = !!currentUser;
   const [showLoginModal, setShowLoginModal] = useState(false);
   const { showToast } = useToast();
 
@@ -39,7 +38,7 @@ export default function ArticlesPage() {
   }, [showToast]);
 
   const handleWriteClick = () => {
-    if (!isLogin) {
+    if (!isLoggedIn) {
       setShowLoginModal(true);
     } else {
       router.push("/article/create");

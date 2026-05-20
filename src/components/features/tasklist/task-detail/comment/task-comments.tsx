@@ -1,6 +1,6 @@
 import { Reply } from "@/components/ui";
 import { taskCommentsSchema } from "@/lib/schema";
-import { useAuthStore } from "@/store/auth.store";
+import { useUser } from "@/hooks/user/use-userQuery";
 import { Comment } from "@/types/comments";
 import { useState } from "react";
 
@@ -13,7 +13,7 @@ export default function TaskCommentsField({
   onSubmit: (commentId: number) => (comment: string, onSuccess: () => void) => Promise<void>;
   onDelete: (commentId: number) => void;
 }) {
-  const { user } = useAuthStore();
+  const { user } = useUser();
   const userId = user?.id ?? null;
 
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);

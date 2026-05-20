@@ -1,13 +1,13 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import getArticleDetail from "@/api/article/get-article-detail";
 import { ArticleDetail } from "@/types/article";
-import { useAuthStore } from "@/store/auth.store";
+import { useUser } from "@/hooks/user/use-userQuery";
 
 export default function useArticleDetail(
   articleId: number,
   initialData?: ArticleDetail,
 ): UseQueryResult<ArticleDetail, Error> {
-  const user = useAuthStore(state => state.user);
+  const { user } = useUser();
   return useQuery<ArticleDetail, Error>({
     queryKey: ["getArticleDetail", articleId, user?.id],
     queryFn: () => getArticleDetail({ articleId }),

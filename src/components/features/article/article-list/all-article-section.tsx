@@ -5,7 +5,7 @@ import { useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import getArticles from "@/api/article/get-articles";
 import deleteArticle from "@/api/article/delete-article";
 import { useMutation } from "@tanstack/react-query";
-import { useAuthStore } from "@/store/auth.store";
+import { useUser } from "@/hooks/user/use-userQuery";
 import { useAlert } from "@/providers/alert-provider";
 import { useToast } from "@/providers/toast-provider";
 import { useDebouncedValue, useInfiniteObserver } from "@/hooks";
@@ -29,7 +29,7 @@ export default function AllArticleSection() {
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const currentUser = useAuthStore(state => state.user);
+  const { user } = useUser();
   const param = searchParams.get("orderBy");
   const orderBy: OrderByType = param === "like" || param === "recent" ? param : "recent";
   const searchQuery = searchParams.get("keyword") ?? "";
@@ -140,7 +140,7 @@ export default function AllArticleSection() {
             href={`/article/${article.id}`}
             key={article.id}
             actions={
-              currentUser?.id === article.writer.id
+              user?.id === article.writer.id
                 ? [
                     {
                       label: "수정하기",

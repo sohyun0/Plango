@@ -5,8 +5,7 @@ import IcCancel from "@/assets/icons/ic-cancel.svg";
 import IcBoard from "@/assets/icons/ic-board.svg";
 import Logo from "@/assets/landing/logo-flat.svg";
 import { Avatar } from "@/components/ui";
-import { useQuery } from "@tanstack/react-query";
-import getUser from "@/api/user/get-user";
+import { useUser } from "@/hooks/user/use-userQuery";
 
 interface sidebarProps {
   onClick: (open: boolean) => void;
@@ -14,7 +13,7 @@ interface sidebarProps {
 }
 
 export function HeaderSidebar({ onClick, isLogin = false }: sidebarProps) {
-  const { data: user } = useQuery({ queryKey: ["getUser"], queryFn: getUser });
+  const { user } = useUser();
 
   return (
     <div className="absolute top-0 z-40 h-screen w-full bg-modal-dimmed">

@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/auth.store";
+import { useUser } from "@/hooks/user/use-userQuery";
 import { useToast } from "@/providers/toast-provider";
 import { ArticleConfirmModal } from "@/components/features/article/layout";
 import { Button } from "@/components/ui";
@@ -12,7 +12,7 @@ import { ARTICLE_FORM_STYLES } from "@/components/features/article/index.styles"
 export default function CopyToken({ token }: { token: string }) {
   const isExpired = isTokenExpire(token);
   const router = useRouter();
-  const user = useAuthStore(state => state.user);
+  const { user } = useUser();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
   const { showToast } = useToast();

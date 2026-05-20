@@ -1,9 +1,11 @@
 "use client";
 
-import { useAuthStore, useUIStore } from "@/store/auth.store";
+import { useQueryClient } from "@tanstack/react-query";
+import { useUIStore } from "@/store/auth.store";
 import { useRouter, useSearchParams } from "next/navigation";
 import useLogout from "./use-logout";
 import { AuthSuccessPayload } from "@/types/auth";
+import { authQueryKeys } from "@/queryKeys/Auth";
 
 /**
  * 로그인 / 회원가입 성공 이후 공통 처리 훅
@@ -15,7 +17,7 @@ const useAuthSuccess = () => {
   const params = useSearchParams();
   const redirectTo = params.get("redirect");
 
-  const { setUser } = useAuthStore(state => state.actions);
+  const queryClient = useQueryClient();
   const setAuthError = useUIStore(state => state.setAuthError);
   const logout = useLogout();
 
@@ -37,8 +39,8 @@ const useAuthSuccess = () => {
         return;
       }
 
-      // 유저 정보 저장
-      setUser(user);
+      // 쿼리 캐시에 유저 저장
+      queryClient.setQueryData(authQueryKeys.user, user);
 
       // 쿼리 파라미터 이동
       router.replace(redirectTo ?? "/");

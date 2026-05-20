@@ -2,7 +2,7 @@
 
 import { userMemberPermission } from "@/hooks/taskList/use-tasklist";
 import { useAlert } from "@/providers/alert-provider";
-import { useAuthStore } from "@/store/auth.store";
+import { useUser } from "@/hooks/user/use-userQuery";
 import { Member } from "@/types/tasklist";
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 
@@ -28,7 +28,7 @@ export default function TaskListProvider({
   date: string;
   children: React.ReactNode;
 }) {
-  const { user, initialized } = useAuthStore();
+  const { user, isPending: isUserLoading, isError } = useUser();
   const [memberInfo, setMemberInfo] = useState<Member | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentISOStrDate, setCurrentISOStrDate] = useState(date);
@@ -66,11 +66,11 @@ export default function TaskListProvider({
   });
 
   useEffect(() => {
-    if (!initialized) return;
+    if (isUserLoading || isError) return;
 
     setIsLoading(queryLoading);
     setMemberInfo(data ?? null);
-  }, [initialized, queryLoading, data]);
+  }, [isUserLoading, isError, queryLoading, data]);
 
   const refresh = async () => {
     setIsLoading(true);
@@ -79,7 +79,7 @@ export default function TaskListProvider({
     setIsLoading(false);
   };
 
-  if (!initialized || !user) return null;
+  if (isUserLoading || isError || !user) return null;
 
   const isTeam = !!memberInfo;
 

@@ -6,7 +6,7 @@ import getArticleComments from "@/api/article/comment/get-article-comments";
 import postArticleComment from "@/api/article/comment/post-article-comment";
 import deleteArticleComment from "@/api/article/comment/delete-article-comment";
 import patchArticleComment from "@/api/article/comment/patch-article-comment";
-import { useAuthStore } from "@/store/auth.store";
+import { useUser } from "@/hooks/user/use-userQuery";
 import ArticleCommentList from "./article-comment-list";
 import { ArticleComments } from "@/types/article-comment";
 import { useInfiniteObserver } from "@/hooks";
@@ -23,7 +23,7 @@ const singleLineBreaks = (str: string) => str.replace(/\n{2,}/g, "\n");
 export default function ArticleCommentSection({ articleId }: { articleId: number }) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const currentUser = useAuthStore(state => state.user);
+  const { user, isLoggedIn } = useUser();
   const prevContentRef = useRef<string | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -187,7 +187,7 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
           <ReplyInput
             value={comment}
             onChange={setComment}
-            isLoggedIn={!!currentUser}
+            isLoggedIn={isLoggedIn}
             isPending={isMutating}
             onRequireLogin={handleRequireLogin}
           />
@@ -198,7 +198,7 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
           isFetchingNextPage={isFetchingNextPage}
           ObserverRef={ObserverRef}
           editingId={editingId}
-          currentUser={currentUser}
+          currentUser={user ?? null}
           handleEditSave={handleEditSave}
           handleCancelEdit={handleCancelEdit}
           handleDelete={handleDelete}

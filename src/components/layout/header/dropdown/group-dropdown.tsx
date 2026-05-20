@@ -3,8 +3,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Dropdown, Avatar } from "@/components/ui";
 import { DropdownOption } from "@/types/option";
-import { useQuery } from "@tanstack/react-query";
-import getUser from "@/api/user/get-user";
+import { useUser } from "@/hooks/user/use-userQuery";
 import IcArrow from "@/assets/icons/ic-arrow-down.svg";
 import cn from "@/lib/cn";
 
@@ -16,7 +15,7 @@ interface dropdownProps {
 export function GroupDropdown({ className, isLogin = false }: dropdownProps) {
   const pathname = usePathname();
 
-  const { data: user } = useQuery({ queryKey: ["getUser"], queryFn: getUser });
+  const { user } = useUser();
 
   const [selectedGroup, setSelectedGroup] = useState<DropdownOption>({
     id: 0,

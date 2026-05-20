@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/providers/toast-provider";
 import { devConsoleError } from "@/lib/error";
 import { useQueryClient } from "@tanstack/react-query";
+import { authQueryKeys } from "@/queryKeys/Auth";
 
 export default function TeamTitle({ name, id, userRole }: teamTitleProps) {
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function TeamTitle({ name, id, userRole }: teamTitleProps) {
   const { mutate } = useMutation({
     mutationFn: deleteTeam,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getUser"] });
+      queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
       router.replace("/");
     },
     onError: error => {

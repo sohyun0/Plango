@@ -1,21 +1,21 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Input } from "@/components/ui";
 import { GroupJoinRequest } from "@/types/group";
-import { useAuthStore } from "@/store/auth.store";
+import { useUser } from "@/hooks/user/use-userQuery";
 import postTeamJoin from "@/api/team/post-join-team";
 import { useToast } from "@/providers/toast-provider";
 import axios from "axios";
 import { devConsoleError } from "@/lib/error";
-import { useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "@/providers/alert-provider";
+import { authQueryKeys } from "@/queryKeys/Auth";
 
 export default function TeamJoinPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const user = useAuthStore(state => state.user);
+  const { user } = useUser();
   const { showToast } = useToast();
   const { showAlert } = useAlert();
 
@@ -42,7 +42,7 @@ export default function TeamJoinPage() {
     mutationFn: postTeamJoin,
     onSuccess: res => {
       sessionStorage.setItem("teamJoinMessage", "팀에 합류했습니다.");
-      queryClient.invalidateQueries({ queryKey: ["getUser"] });
+      queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
       setFormData(fd => ({ ...fd, token: "" }));
 
       router.replace(`/team/${res.groupId}`);

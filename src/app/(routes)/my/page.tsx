@@ -10,28 +10,25 @@ import { Container } from "@/components/layout";
 import ProfileSkeleton from "@/components/skeleton-ui/profile-skeleton";
 import { Button, Form } from "@/components/ui";
 import { useToggle } from "@/hooks";
-import { useUserQuery, useUserUpdateQuery } from "@/hooks/user/use-userQuery";
+import { useUser, useUserUpdateQuery } from "@/hooks/user/use-userQuery";
 import { nicknameErrorHandler } from "@/lib/error";
 import { changeProfileSchema, ChangeProfileSchema } from "@/lib/schema";
 import { useToast } from "@/providers/toast-provider";
-import { useAuthStore } from "@/store/auth.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function My() {
-  const { data: userData, isPending: isLoading, isError } = useUserQuery();
-  const { mutate, isPending } = useUserUpdateQuery();
-  const user = useAuthStore(state => state.user);
+  const { user, isPending: isUserPending, isError } = useUser();
+  const { mutate, isPending: isUpdatePending } = useUserUpdateQuery();
   const { isOpen, setOpen, setClose } = useToggle();
   const { showToast } = useToast();
 
   const handleSubmit = async (data: ChangeProfileSchema) => {
-    const prevUser = useAuthStore.getState().user;
     const payload: ChangeProfileSchema = {};
 
-    if (data.nickname !== prevUser?.nickname) {
+    if (data.nickname !== user?.nickname) {
       payload.nickname = data.nickname;
     }
-    if (data.image !== undefined && data.image !== prevUser?.image) {
+    if (data.image !== undefined && data.image !== user?.image) {
       payload.image = data.image;
     }
     if (Object.keys(payload).length === 0) {
@@ -42,7 +39,7 @@ export default function My() {
     mutate(payload);
   };
 
-  if (isLoading) return <ProfileSkeleton />;
+  if (isUserPending) return <ProfileSkeleton />;
 
   if (isError) {
     return (
@@ -65,8 +62,8 @@ export default function My() {
           mode="onChange"
           reValidateMode="onChange"
           defaultValues={{
-            nickname: userData?.nickname,
-            image: userData?.image ?? undefined,
+            nickname: user?.nickname,
+            image: user?.image ?? undefined,
           }}
         >
           <ProfileUpdateFormField
@@ -80,7 +77,7 @@ export default function My() {
             form="profileForm"
             type="submit"
             className="ml-auto w-1/4 self-end"
-            disabled={isPending}
+            disabled={isUpdatePending}
           >
             프로필 변경
           </Button>

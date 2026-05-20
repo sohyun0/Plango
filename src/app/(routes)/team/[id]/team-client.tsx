@@ -5,7 +5,7 @@ import { Container } from "@/components/layout";
 import { GetGroupsResponse, TodoListProps } from "@/types/group";
 import { Member } from "@/types/tasklist";
 import { TeamTitle, TodoList, TeamMember, TeamReport } from "@/components/features/team";
-import { useAuthStore } from "@/store/auth.store";
+import { useUser } from "@/hooks/user/use-userQuery";
 import { useToast } from "@/providers/toast-provider";
 import TeamSkeleton from "@/components/skeleton-ui/team-skeleton";
 import { useQuery } from "@tanstack/react-query";
@@ -20,8 +20,7 @@ export default function TeamClientPages({
 }) {
   const { showToast } = useToast();
 
-  const user = useAuthStore(state => state.user);
-  const initialized = useAuthStore(state => state.initialized);
+  const { user, isPending: userLoading } = useUser();
 
   const [members, setMembers] = useState<Member[]>([]);
   const [todoLists, setTodoLists] = useState<TodoListProps>();
@@ -48,7 +47,7 @@ export default function TeamClientPages({
     }
   }, [groups]);
 
-  if (!initialized) {
+  if (userLoading) {
     return <TeamSkeleton />;
   }
 

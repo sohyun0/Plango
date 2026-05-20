@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import deleteArticle from "@/api/article/delete-article";
-import { useAuthStore } from "@/store/auth.store";
+import { useUser } from "@/hooks/user/use-userQuery";
 import { ArticleDetail } from "@/types/article";
 import { useAlert } from "@/providers/alert-provider";
 import { Dropdown } from "@/components/ui";
@@ -19,7 +19,7 @@ export default function KebabMenu({
 }) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const currentUser = useAuthStore(state => state.user);
+  const { user } = useUser();
   const { showAlert } = useAlert();
   const { showToast } = useToast();
 
@@ -46,7 +46,7 @@ export default function KebabMenu({
     }
   };
 
-  if (currentUser?.id !== article.writer.id) return null;
+  if (user?.id !== article.writer.id) return null;
 
   return (
     <Dropdown className={className}>

@@ -1,44 +1,27 @@
-"use client";
+import type { ReactNode } from "react";
+import { cookies } from "next/headers";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
+import QueryProvider from "@/providers/query-provider";
+import getSSRUser from "@/api/user/get-ssr-user";
+import { getQueryClient } from "@/lib/getQueryClient";
+import { authQueryKeys } from "@/queryKeys/Auth";
 
-import { ReactNode, useEffect } from "react";
-import { useAuthStore } from "@/store/auth.store";
-import { User } from "@/types/user";
-
-/**
- * 최초 렌더링 시 SSR 기반 로그인
- * @author sohyun
- */
-type AuthProviderProps = {
-  initialUser: User | null;
+export type AuthProviderProps = {
   children: ReactNode;
 };
-export default function AuthProvider({ children, initialUser }: AuthProviderProps) {
-  const { setUser, setInitialized } = useAuthStore(state => state.actions);
 
-  useEffect(() => {
-    if (initialUser) {
-      setUser(initialUser);
-      setInitialized(true);
-      return;
-    }
+export default async function AuthProvider({ children }: AuthProviderProps) {
+  const queryClient = getQueryClient();
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
 
-    const initializeUser = async () => {
-      try {
-        const response = await fetch("/api/user");
+  if (accessToken) {
+    await queryClient.prefetchQuery({ queryKey: authQueryKeys.user, queryFn: getSSRUser });
+  }
 
-        if (!response.ok) return;
-
-        const data = await response.json();
-        if (data) {
-          setUser(data);
-        }
-      } finally {
-        setInitialized(true);
-      }
-    };
-
-    initializeUser();
-  }, [initialUser, setUser, setInitialized]);
-
-  return <>{children}</>;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <QueryProvider>{children}</QueryProvider>
+    </HydrationBoundary>
+  );
 }

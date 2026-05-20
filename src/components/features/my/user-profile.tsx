@@ -9,7 +9,7 @@ import { useImageUpload } from "@/hooks";
 import { FILE_ACCEPT } from "@/constants/file_policy";
 import cn from "@/lib/cn";
 import postImagesUpload from "@/api/image/post-images-upload";
-import { useAuthStore } from "@/store/auth.store";
+import { useUser } from "@/hooks/user/use-userQuery";
 import { ReactNode, useState } from "react";
 import { useToast } from "@/providers/toast-provider";
 import { devConsoleError } from "@/lib/error";
@@ -46,8 +46,8 @@ export function ProfileField({ id, label, errorMsg, caption, children }: Profile
 
 // 유저 이미지 수정
 function ProfileImage({ value, onChange }: ImgUploadProps) {
+  const { user } = useUser();
   const { preview, error, handleFile, clearPreview } = useImageUpload();
-  const user = useAuthStore.getState().user;
   const [defaultImg, setDefaultImg] = useState(user?.image);
   const { showToast } = useToast();
 
