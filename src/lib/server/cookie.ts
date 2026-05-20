@@ -16,7 +16,7 @@ type CookieOptions = {
 
 const DEFAULT_COOKIE_OPTIONS = {
   secure: process.env.NODE_ENV === "production",
-  sameSite: "lax" as const,
+  sameSite: "lax",
   path: "/",
 } satisfies CookieOptions;
 
@@ -80,8 +80,8 @@ export const deleteCookie = async (name: string) => {
   cookieStore.set({
     name,
     value: "",
+    ...DEFAULT_COOKIE_OPTIONS,
     maxAge: 0,
-    path: "/",
   });
 };
 
