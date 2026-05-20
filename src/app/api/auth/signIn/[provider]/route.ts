@@ -1,16 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { serverFetch } from "@/lib/server/server-fetch";
 import { createErrorResponse } from "@/lib/server/error";
+import { createAuthResponse } from "@/lib/server/auth";
+import type { AuthTokenPayload } from "@/types/auth";
 
 export async function POST(req: NextRequest, { params }: { params: { provider: string } }) {
   try {
     const { provider } = params;
     const body = await req.json();
-    const data = await serverFetch(`/auth/signIn/${provider}`, {
+    const data = await serverFetch<AuthTokenPayload>(`/auth/signIn/${provider}`, {
       method: "POST",
       body: JSON.stringify(body),
     });
-    return NextResponse.json(data);
+    return createAuthResponse(data);
   } catch (error) {
     return createErrorResponse(
       `POST /api/auth/signIn/${params.provider} 오류: ${error}`,

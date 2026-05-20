@@ -22,23 +22,9 @@ const useAuthSuccess = () => {
   const logout = useLogout();
 
   return async (authData: AuthSuccessPayload) => {
-    const { accessToken, refreshToken, user } = authData;
+    const { user } = authData;
 
     try {
-      // refreshToken을 HttpOnly 쿠키로 저장
-      const res = await fetch("/api/auth/set-refresh-token", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refreshToken, accessToken }),
-      });
-
-      if (!res.ok) {
-        // 쿠키 저장 실패
-        await logout({ isRedirect: false });
-        setAuthError("로그인 중 오류가 발생했습니다.");
-        return;
-      }
-
       // 쿼리 캐시에 유저 저장
       queryClient.setQueryData(authQueryKeys.user, user);
 
