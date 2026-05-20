@@ -246,6 +246,7 @@ src
 - 자동 로그인 유지 & 토큰 자동 갱신
 - Middleware 기반 라우팅 보호
 - JWT 기반 인증
+- BFF 패턴을 사용한 토큰 관리
 
 ### 상태 관리
 
@@ -286,6 +287,7 @@ src
 ## ✨ 주요 페이지별 기능
 
 ### 팀 페이지
+
 <img width="360" alt="img-2" src="https://github.com/user-attachments/assets/2d53fd85-0fc9-4680-80b6-fe08a4394d30" />
 
 - 팀 생성 / 수정 / 삭제
@@ -298,6 +300,7 @@ src
 - 페이지 전체를 새로고침하지 않고도 즉각적인 UI 업데이트 경험 제공
 
 ### 할 일 설정 및 리스트
+
 <img height="400" alt="img-3" src="https://github.com/user-attachments/assets/4cfd27bd-76ff-4ca1-b643-70c0f62760b7" />
 
 - 날짜 기반 리스트 노출 (캘린더)
@@ -310,6 +313,7 @@ src
   상태를 유지함
 
 ### 자유게시판
+
 <img height="400" alt="img-4" src="https://github.com/user-attachments/assets/69bd13c0-4722-441c-b851-ed90f9b2a3ca" />
 
 - 검색(Search) 및 정렬(Order) 기능 debounce 적용으로 불필요한 서버 요청 방지 및 성능 최적화
@@ -319,8 +323,12 @@ src
   사용자 피드백 강화
 
 ### 마이 히스토리
+
 <img height="400" alt="img-1" src="https://github.com/user-attachments/assets/2ee463f5-feea-4195-bea3-f4c3ce3e4ff1" />
 
-- SSR 초기 렌더링 + CSR 이후 데이터 갱신 구조를 적용하여 초기 진입 시 빠르고 안정적인 첫 화면 제공
+- 페이지네이션이 없이 전체 히스토리를 반환하는 API 특성을 고려하여 SSR prefetch를 적용하여 초기 진입
+  시 빠르고 안정적인 첫 화면 제공
+- ErrorBoundary와 Suspense를 사용하여 React Query의 로딩·에러·빈 상태 UI를 분리해 데이터 패칭 실패가
+  전체 화면 장애로 이어지지 않도록 구성
 - 데이터 패치 실패 시 사용자에게 ‘다시 불러오기’ 버튼 제공하여 에러 상황에서도 사용자 흐름이 끊기지
   않도록 복구 기능 지원
