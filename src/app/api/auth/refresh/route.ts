@@ -42,8 +42,7 @@ export const POST = async () => {
     // accessToken 쿠키 설정 (httpOnly:true로 보안 강화)
     await setAccessTokenCookie(data.accessToken);
 
-    // accessToken 반환
-    return NextResponse.json({ accessToken: data.accessToken }, { status: 200 });
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     return createErrorResponse(
       `refresh 처리 중 서버 오류 발생 : ${error}`,
