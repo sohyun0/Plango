@@ -19,8 +19,13 @@ export type OauthProvider = {
   redirectUri: string;
   token: string;
 };
-export type AuthSuccessPayload = {
+
+export type AuthTokenPayload = {
   accessToken: string;
   refreshToken: string;
+  user: User;
+};
+
+export type AuthSuccessPayload = {
   user: User;
 };
