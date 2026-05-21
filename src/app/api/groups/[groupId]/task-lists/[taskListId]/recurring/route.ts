@@ -4,10 +4,11 @@ import { createErrorResponse } from "@/lib/server/error";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { groupId: string; taskListId: string } },
+  { params }: { params: Promise<{ groupId: string; taskListId: string }> },
 ) {
+  const { groupId, taskListId } = await params;
+
   try {
-    const { groupId, taskListId } = params;
     const body = await req.json();
     const data = await serverFetch(`/groups/${groupId}/task-lists/${taskListId}/recurring`, {
       method: "POST",
@@ -16,7 +17,7 @@ export async function POST(
     return NextResponse.json(data);
   } catch (error) {
     return createErrorResponse(
-      `POST /api/groups/${params.groupId}/task-lists/${params.taskListId}/recurring 오류: ${error}`,
+      `POST /api/groups/${groupId}/task-lists/${taskListId}/recurring 오류: ${error}`,
       "반복 태스크 생성 중 오류가 발생했습니다.",
       500,
     );

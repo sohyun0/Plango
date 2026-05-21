@@ -4,10 +4,11 @@ import { createErrorResponse } from "@/lib/server/error";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { groupId: string; taskListId: string } },
+  { params }: { params: Promise<{ groupId: string; taskListId: string }> },
 ) {
+  const { groupId, taskListId } = await params;
+
   try {
-    const { groupId, taskListId } = params;
     const { searchParams } = new URL(req.url);
     const endpoint = searchParams.toString()
       ? `/groups/${groupId}/task-lists/${taskListId}?${searchParams.toString()}`
@@ -16,7 +17,7 @@ export async function GET(
     return NextResponse.json(data);
   } catch (error) {
     return createErrorResponse(
-      `GET /api/groups/${params.groupId}/task-lists/${params.taskListId} 오류: ${error}`,
+      `GET /api/groups/${groupId}/task-lists/${taskListId} 오류: ${error}`,
       "태스크 목록을 가져오는 중 오류가 발생했습니다.",
       500,
     );
@@ -25,10 +26,11 @@ export async function GET(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { groupId: string; taskListId: string } },
+  { params }: { params: Promise<{ groupId: string; taskListId: string }> },
 ) {
+  const { groupId, taskListId } = await params;
+
   try {
-    const { groupId, taskListId } = params;
     const body = await req.json();
     const data = await serverFetch(`/groups/${groupId}/task-lists/${taskListId}`, {
       method: "PATCH",
@@ -37,7 +39,7 @@ export async function PATCH(
     return NextResponse.json(data);
   } catch (error) {
     return createErrorResponse(
-      `PATCH /api/groups/${params.groupId}/task-lists/${params.taskListId} 오류: ${error}`,
+      `PATCH /api/groups/${groupId}/task-lists/${taskListId} 오류: ${error}`,
       "태스크 목록 수정 중 오류가 발생했습니다.",
       500,
     );
@@ -46,17 +48,18 @@ export async function PATCH(
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { groupId: string; taskListId: string } },
+  { params }: { params: Promise<{ groupId: string; taskListId: string }> },
 ) {
+  const { groupId, taskListId } = await params;
+
   try {
-    const { groupId, taskListId } = params;
     const data = await serverFetch(`/groups/${groupId}/task-lists/${taskListId}`, {
       method: "DELETE",
     });
     return NextResponse.json(data);
   } catch (error) {
     return createErrorResponse(
-      `DELETE /api/groups/${params.groupId}/task-lists/${params.taskListId} 오류: ${error}`,
+      `DELETE /api/groups/${groupId}/task-lists/${taskListId} 오류: ${error}`,
       "태스크 목록 삭제 중 오류가 발생했습니다.",
       500,
     );
