@@ -1,78 +1,54 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { Dropdown, Avatar } from "@/components/ui";
 import { DropdownOption } from "@/types/option";
-import { useUser } from "@/hooks/user/use-userQuery";
+import { User } from "@/types/user";
 import IcArrow from "@/assets/icons/ic-arrow-down.svg";
 import cn from "@/lib/cn";
 
 interface dropdownProps {
   className?: string;
   isLogin: boolean;
+  user?: User | null;
 }
 
-export function GroupDropdown({ className, isLogin = false }: dropdownProps) {
+export function GroupDropdown({ className, isLogin = false, user }: dropdownProps) {
   const pathname = usePathname();
 
-  const { user } = useUser();
+  const selectedGroup = useMemo<DropdownOption | null>(() => {
+    const memberships = user?.memberships;
+    if (!memberships?.length) return null;
 
-  const [selectedGroup, setSelectedGroup] = useState<DropdownOption>({
-    id: 0,
-    name: "",
-    image: "",
-  });
+    const pathSegments = pathname.split("/");
+    const groupIdString =
+      pathSegments[1] === "team" && pathSegments[2] ? pathSegments[2] : undefined;
 
-  useEffect(() => {
-    if (user?.memberships) {
-      if (user.memberships.length !== 0) {
-        {
-          let groupIdString: string | undefined;
+    const currentMembership = groupIdString
+      ? memberships.find(mb => String(mb.group.id) === groupIdString)
+      : undefined;
+    const group = currentMembership?.group ?? memberships[0].group;
 
-          const pathSegments = pathname.split("/");
+    return {
+      id: group.id,
+      image: group.image,
+      name: group.name,
+    };
+  }, [pathname, user?.memberships]);
 
-          if (pathSegments[1] === "team" && pathSegments[2]) {
-            groupIdString = pathSegments[2];
-          }
-
-          let initialGroup = user.memberships[0];
-
-          if (groupIdString) {
-            const foundGroup = user.memberships.find(mb => String(mb.group.id) === groupIdString);
-
-            if (foundGroup) {
-              initialGroup = foundGroup;
-            }
-          }
-
-          setSelectedGroup(prev => ({
-            ...prev,
-            id: initialGroup.group.id,
-            image: initialGroup.group.image,
-            name: initialGroup.group.name,
-          }));
-        }
-      }
-    }
-  }, [user, pathname]);
-
-  const handleGroupSelect = ({ name, image }: DropdownOption) => {
-    setSelectedGroup(prev => ({ ...prev, name: name, image: image }));
-  };
-
-  if (!isLogin) {
+  if (!isLogin || !selectedGroup) {
     return <></>;
   }
 
   return (
-    <Dropdown onSelect={handleGroupSelect} className={cn(className, "w-[140px]")} size="md">
+    <Dropdown className={cn(className, "w-[140px]")} size="md">
       <Dropdown.TriggerSelect
         size="md"
         intent="select"
         isIcon={true}
         className="w-[140px] gap-1 bg-gray-800 px-2"
       >
-        <div className="inline-block flex w-[100px] items-center">
+        <div className="flex w-[100px] items-center">
           <Avatar
             image={selectedGroup.image}
             shape="square"

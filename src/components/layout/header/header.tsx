@@ -54,7 +54,7 @@ export default function Header({ isLoginPage, user, isLogin = false }: HeaderPro
             </Link>
           </h1>
           <div className="hidden w-[240px] tablet:flex tablet:items-center tablet:justify-between">
-            {isLogin && <GroupDropdown isLogin={isLogin} />}
+            {isLogin && <GroupDropdown isLogin={isLogin} user={user} />}
             <Link href="/article" scroll={false}>
               자유게시판
             </Link>
