@@ -14,7 +14,9 @@ import useAuthSuccess from "./use-auth-success";
 import postSignInProvider from "@/api/auth/post-signin-provider";
 import { devConsoleError } from "@/lib/error";
 
-export const useSignInMutation = (onSuccess: (data: AuthSuccessPayload) => void) => {
+type AuthSuccessHandler = (data: AuthSuccessPayload) => void | Promise<void>;
+
+export const useSignInMutation = (onSuccess: AuthSuccessHandler) => {
   return useMutation<AuthSuccessPayload, AxiosError, SignInSchema>({
     mutationFn: postSignIn,
     retry: 1,
@@ -22,7 +24,7 @@ export const useSignInMutation = (onSuccess: (data: AuthSuccessPayload) => void)
   });
 };
 
-export const useSignUpMutation = (onSuccess: (data: AuthSuccessPayload) => void) => {
+export const useSignUpMutation = (onSuccess: AuthSuccessHandler) => {
   return useMutation<AuthSuccessPayload, AxiosError, SignUpSchema>({
     mutationFn: postSignUp,
     retry: 1,

@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import useLogout from "./use-logout";
 import { AuthSuccessPayload } from "@/types/auth";
 import { authQueryKeys } from "@/queryKeys/Auth";
+import getUser from "@/api/user/get-user";
 
 /**
  * 로그인 / 회원가입 성공 이후 공통 처리 훅
@@ -25,8 +26,13 @@ const useAuthSuccess = () => {
     const { user } = authData;
 
     try {
-      // 쿼리 캐시에 유저 저장
+      // 로그인 응답의 user에는 memberships가 없기때문에 user 정보를 불러오기
       queryClient.setQueryData(authQueryKeys.user, user);
+      await queryClient.fetchQuery({
+        queryKey: authQueryKeys.user,
+        queryFn: getUser,
+        staleTime: 0,
+      });
 
       // 쿼리 파라미터 이동
       router.replace(redirectTo ?? "/");
