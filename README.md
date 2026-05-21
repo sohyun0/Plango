@@ -70,7 +70,6 @@
         <li>랜딩페이지</li>
         <li>리디자인</li>
         <li>README</li>
-        <li>GitHub Wiki</li>
       </ul>
     </td>
     <td align="center" valign="top" width="25%">
